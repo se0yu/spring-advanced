@@ -38,15 +38,24 @@ class ManagerServiceTest {
     @InjectMocks
     private ManagerService managerService;
 
+
+    /*
+    1. todo가 empty로 리턴되는 이유는 에러 발생 테스트 목적인 것으로 판단했음
+    2. 메서드 명은 manager_목록_조회_시_Todo가_없다면_NPE_에러를_던진다 이지만 발생하는 에러는 InvalidRequestException이다.
+    3. todo가 존재하지 않을 시에 던지는 에러인데 메세지는 Manager not found 이다.
+
+    Manager not found -> Todo not found 변경
+    메서드명 manager_목록_조회_시_Todo가_없다면_NPE_에러를_던진다() -> manager_목록_조회_시_Todo가_없다면_InvalidRequestException_에러를_던진다()
+     */
     @Test
-    public void manager_목록_조회_시_Todo가_없다면_NPE_에러를_던진다() {
+    public void manager_목록_조회_시_Todo가_없다면_InvalidRequestException_에러를_던진다() {
         // given
         long todoId = 1L;
         given(todoRepository.findById(todoId)).willReturn(Optional.empty());
 
         // when & then
         InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> managerService.getManagers(todoId));
-        assertEquals("Manager not found", exception.getMessage());
+        assertEquals("Todo not found", exception.getMessage());
     }
 
     @Test

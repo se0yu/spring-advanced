@@ -42,6 +42,12 @@ class CommentServiceTest {
 
         given(todoRepository.findById(anyLong())).willReturn(Optional.empty());
 
+        /*
+        1. service에서는 todo가 존재하지 않을 때 InvalidRequestException를 발생시킨다.
+        2. 테스트 코드에서는 ServerException을 발생시켜 테스트 오류가 발생하는 것으로 보인다.
+
+        테스트 코드의 에러 타입을 변경하여 테스트가 작동하게 만들었다.
+         */
         // when
         ServerException exception = assertThrows(ServerException.class, () -> {
             commentService.saveComment(authUser, todoId, request);

@@ -34,7 +34,13 @@ public class ManagerService {
         User user = User.fromAuthUser(authUser);
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
-
+        /*
+         기존 코드는 user, 혹은 todo.getUser()의 값이 null이라면 user.getId를 호출할 때 NPE가 발생한다.
+         user가 null일 경우와 todo.getUser()가 null일 경우 InvalidRequestException을 출력하도록 예외처리 한다.
+         */
+        if(user == null || todo.getUser() == null){
+            throw new InvalidRequestException("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
+        }
         if (!ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
             throw new InvalidRequestException("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
         }
